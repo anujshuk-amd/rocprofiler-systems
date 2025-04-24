@@ -547,7 +547,7 @@ setup()
             //     amdsmi_get_gpu_id(gpu::get_handle_from_id(itr), &dev_id));
             // // dev_id holds the device ID of device i, upon a successful call
 
-            if( (_metrics && !_metrics->empty()) && (*_metrics != "all") )
+            if((_metrics && !_metrics->empty()) && (*_metrics != "all"))
             {
                 using key_pair_t     = std::pair<std::string_view, bool&>;
                 const auto supported = std::unordered_map<std::string_view, bool&>{
@@ -560,7 +560,8 @@ setup()
                 };
 
                 get_settings(itr) = { false, false, false, false, false, false };
-                // Added support for none and all option. In case of none all metrics would be false.
+                // Added support for none and all option. In case of none all metrics
+                // would be false.
                 if(*_metrics != "none")
                 {
                     for(const auto& metric : tim::delimit(*_metrics, ",;:\t\n "))
@@ -569,7 +570,7 @@ setup()
                         if(iitr == supported.end())
                             ROCPROFSYS_FAIL_F("unsupported amd-smi metric: %s\n",
                                               metric.c_str());
-    
+
                         ROCPROFSYS_VERBOSE_F(1, "Enabling amd-smi metric '%s'\n",
                                              metric.c_str());
                         iitr->second = true;
