@@ -569,8 +569,8 @@ setup()
                             ROCPROFSYS_FAIL_F("unsupported amd-smi metric: %s\n",
                                               metric.c_str());
 
-                        ROCPROFSYS_VERBOSE_F(1, "Enabling amd-smi metric '%s'\n",
-                                             metric.c_str());
+                        ROCPROFSYS_VERBOSE_F(1, "Enabling amd-smi metric '%s' on device [%u]\n",
+                                             metric.c_str(), itr);
                         iitr->second = true;
                     }
                 }
