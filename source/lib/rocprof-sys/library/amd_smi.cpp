@@ -542,7 +542,6 @@ setup()
         for(auto itr : _devices)
         {
             // Enable selected metrics only
-
             if((_metrics && !_metrics->empty()) && (*_metrics != "all"))
             {
                 using key_pair_t     = std::pair<std::string_view, bool&>;
@@ -558,8 +557,8 @@ setup()
                 // Initialize all metrics to false
                 for(auto& itr : supported)
                     itr.second = false;
-                    
-               // Parse list of metrics enabled by the user
+
+                // Parse list of metrics enabled by the user
                 if(*_metrics != "none")
                 {
                     for(const auto& metric : tim::delimit(*_metrics, ",;:\t\n "))
