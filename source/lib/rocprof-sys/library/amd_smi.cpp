@@ -559,9 +559,11 @@ setup()
                     key_pair_t{ "jpeg_activity", get_settings(itr).jpeg_activity },
                 };
 
-                get_settings(itr) = { false, false, false, false, false, false };
-                // Added support for none and all option. In case of none all metrics
-                // would be false.
+                // Initialize all metrics to false
+                for(auto& itr : supported)
+                    itr.second = false;
+                    
+               // Parse list of metrics enabled by the user
                 if(*_metrics != "none")
                 {
                     for(const auto& metric : tim::delimit(*_metrics, ",;:\t\n "))
