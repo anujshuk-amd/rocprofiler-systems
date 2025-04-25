@@ -541,11 +541,7 @@ setup()
     {
         for(auto itr : _devices)
         {
-            // Did not see usage of code after changing dev_id to itr
-            // uint16_t dev_id = 0;
-            // ROCPROFSYS_AMD_SMI_CALL(
-            //     amdsmi_get_gpu_id(gpu::get_handle_from_id(itr), &dev_id));
-            // // dev_id holds the device ID of device i, upon a successful call
+            // Enable selected metrics only
 
             if((_metrics && !_metrics->empty()) && (*_metrics != "all"))
             {
