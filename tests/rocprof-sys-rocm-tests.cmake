@@ -84,53 +84,48 @@ rocprofiler_systems_add_test(
     REWRITE_FAIL_REGEX "0 instrumented loops in procedure transpose")
 
 if(ROCPROFSYS_USE_ROCM)
-	set(NAVI_REGEX "gfx(10|11|12)[0-9][0-9]")
-	rocprofiler_sys_get_gfx_info(${NAVI_REGEX} NAVI_DETECTED )
-	message(STATUS "Output is :  ${NAVI_DETECTED}")
-	if (NAVI_DETECTED)
-		set(ROCPROFSYS_ROCM_EVENTS_TEST "SQ_WAVES")
-		set(ROCPROFSYS_FILE_CHECKS
-				"rocprof-device-0-SQ_WAVES.txt")
-		set(ROCPROFSYS_COUNTER_NAMES_ARG "SQ_WAVES")
-	else()
-		set(ROCPROFSYS_ROCM_EVENTS_TEST "GRBM_COUNT,SQ_WAVES,SQ_INSTS_VALU,TA_TA_BUSY:device=0")
-		set(ROCPROFSYS_FILE_CHECKS
-			"rocprof-device-0-GRBM_COUNT.txt"
-			"rocprof-device-0-SQ_WAVES.txt"
-			"rocprof-device-0-SQ_INSTS_VALU.txt"
-			"rocprof-device-0-TA_TA_BUSY.txt")
-		set(ROCPROFSYS_COUNTER_NAMES_ARG
-			"GRBM_COUNT"
-			"SQ_WAVES"
-			"SQ_INSTS_VALU"
-			"TA_TA_BUSY")
-	endif()
+    set(NAVI_REGEX "gfx(10|11|12)[A-Za-z0-9][A-Za-z0-9]")
+    rocprofiler_sys_get_gfx_info(${NAVI_REGEX} NAVI_DETECTED)
+    message(STATUS "Output is :  ${NAVI_DETECTED}")
+    if(NAVI_DETECTED)
+        set(ROCPROFSYS_ROCM_EVENTS_TEST "SQ_WAVES")
+        set(ROCPROFSYS_FILE_CHECKS "rocprof-device-0-SQ_WAVES.txt")
+        set(ROCPROFSYS_COUNTER_NAMES_ARG "SQ_WAVES")
+    else()
+        set(ROCPROFSYS_ROCM_EVENTS_TEST
+            "GRBM_COUNT,SQ_WAVES,SQ_INSTS_VALU,TA_TA_BUSY:device=0")
+        set(ROCPROFSYS_FILE_CHECKS
+            "rocprof-device-0-GRBM_COUNT.txt" "rocprof-device-0-SQ_WAVES.txt"
+            "rocprof-device-0-SQ_INSTS_VALU.txt" "rocprof-device-0-TA_TA_BUSY.txt")
+        set(ROCPROFSYS_COUNTER_NAMES_ARG "GRBM_COUNT" "SQ_WAVES" "SQ_INSTS_VALU"
+                                         "TA_TA_BUSY")
+    endif()
 
-	rocprofiler_systems_add_test(
-		SKIP_BASELINE SKIP_RUNTIME
-		NAME transpose-rocprofiler
-		TARGET transpose
-		LABELS "rocprofiler"
-		MPI ${TRANSPOSE_USE_MPI}
-		GPU ON
-		NUM_PROCS ${NUM_PROCS}
-		REWRITE_ARGS -e -v 2 -E uniform_int_distribution
-		ENVIRONMENT
-			"${_base_environment};ROCPROFSYS_ROCM_EVENTS=${ROCPROFSYS_ROCM_EVENTS_TEST}"
-		REWRITE_RUN_PASS_REGEX "${_ROCP_PASS_REGEX}"
-		SAMPLING_PASS_REGEX "${_ROCP_PASS_REGEX}")
+    rocprofiler_systems_add_test(
+        SKIP_BASELINE SKIP_RUNTIME
+        NAME transpose-rocprofiler
+        TARGET transpose
+        LABELS "rocprofiler"
+        MPI ${TRANSPOSE_USE_MPI}
+        GPU ON
+        NUM_PROCS ${NUM_PROCS}
+        REWRITE_ARGS -e -v 2 -E uniform_int_distribution
+        ENVIRONMENT
+            "${_base_environment};ROCPROFSYS_ROCM_EVENTS=${ROCPROFSYS_ROCM_EVENTS_TEST}"
+        REWRITE_RUN_PASS_REGEX "${_ROCP_PASS_REGEX}"
+        SAMPLING_PASS_REGEX "${_ROCP_PASS_REGEX}")
 
-	rocprofiler_systems_add_validation_test(
-		NAME transpose-rocprofiler-sampling
-		PERFETTO_FILE "perfetto-trace.proto"
-		ARGS --counter-names ${ROCPROFSYS_COUNTER_NAMES_ARG} -p
-		EXIST_FILES ${ROCPROFSYS_FILE_CHECKS}
-		LABELS "rocprofiler")
+    rocprofiler_systems_add_validation_test(
+        NAME transpose-rocprofiler-sampling
+        PERFETTO_FILE "perfetto-trace.proto"
+        ARGS --counter-names ${ROCPROFSYS_COUNTER_NAMES_ARG} -p
+        EXIST_FILES ${ROCPROFSYS_FILE_CHECKS}
+        LABELS "rocprofiler")
 
-	rocprofiler_systems_add_validation_test(
-		NAME transpose-rocprofiler-binary-rewrite
-		PERFETTO_FILE "perfetto-trace.proto"
-		ARGS --counter-names ${ROCPROFSYS_COUNTER_NAMES_ARG} -p
-		EXIST_FILES ${ROCPROFSYS_FILE_CHECKS}
-		LABELS "rocprofiler")
+    rocprofiler_systems_add_validation_test(
+        NAME transpose-rocprofiler-binary-rewrite
+        PERFETTO_FILE "perfetto-trace.proto"
+        ARGS --counter-names ${ROCPROFSYS_COUNTER_NAMES_ARG} -p
+        EXIST_FILES ${ROCPROFSYS_FILE_CHECKS}
+        LABELS "rocprofiler")
 endif()

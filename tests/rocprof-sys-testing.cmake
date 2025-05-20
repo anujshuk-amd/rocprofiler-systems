@@ -378,7 +378,7 @@ endfunction()
 
 # -------------------------------------------------------------------------------------- #
 # Take input as regex and return match from rocminfo
-function(rocprofiler_sys_get_gfx_info _REGEXP _VAR )
+function(rocprofiler_sys_get_gfx_info _REGEXP _VAR)
     cmake_parse_arguments(ARG "ECHO" "PREFIX;DELIM" "" ${ARGN})
 
     if(NOT DEFINED ARG_DELIM)
