@@ -85,8 +85,8 @@ rocprofiler_systems_add_test(
 
 if(ROCPROFSYS_USE_ROCM)
     set(NAVI_REGEX "gfx(10|11|12)[A-Za-z0-9][A-Za-z0-9]")
-    rocprofiler_sys_get_gfx_info(${NAVI_REGEX} NAVI_DETECTED)
-    message(STATUS "Output is :  ${NAVI_DETECTED}")
+    rocprofiler_systems_get_gfx_archs(NAVI_DETECTED GFX_MATCH ${NAVI_REGEX} ECHO)
+
     if(NAVI_DETECTED)
         set(ROCPROFSYS_ROCM_EVENTS_TEST "SQ_WAVES")
         set(ROCPROFSYS_FILE_CHECKS "rocprof-device-0-SQ_WAVES.txt")
