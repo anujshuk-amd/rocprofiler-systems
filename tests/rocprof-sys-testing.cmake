@@ -407,7 +407,7 @@ function(ROCPROFILER_SYSTEMS_GET_GFX_INFO _VAR)
             OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_STRIP_TRAILING_WHITESPACE)
 
         if(rocminfo_RET EQUAL 0)
-            string(REGEX MATCHALL "${_REGEXP}" rocminfo_GFXINFO "${rocminfo_OUT}")
+            string(REGEX MATCHAL "gfx([0-9A-Fa-f]+)" rocminfo_GFXINFO "${rocminfo_OUT}")
             list(REMOVE_DUPLICATES rocminfo_GFXINFO)
             set(${_VAR}
                 "${rocminfo_GFXINFO}"
@@ -416,6 +416,23 @@ function(ROCPROFILER_SYSTEMS_GET_GFX_INFO _VAR)
             if(ARG_ECHO)
                 string(REPLACE ";" "${ARG_DELIM}" _GFXINFO_ECHO "${rocminfo_GFXINFO}")
                 message(STATUS "${ARG_PREFIX}System architectures: ${_GFXINFO_ECHO}")
+            endif()
+            
+            # Filter the architectures if a regex is provided
+            if(ARG_GFX_MATCH)
+                string(REGEX MATCH "${ARG_GFX_MATCH}" _GFX_MATCH "${rocminfo_GFXINFO}")
+                list(REMOVE_DUPLICATES _GFX_MATCH)
+                set(${_VAR}
+                    "${_GFX_MATCH}"
+                    PARENT_SCOPE)
+
+                if(ARG_ECHO)
+                    string(REPLACE ";" "${ARG_DELIM}" _GFXINFO_ECHO "${_GFX_MATCH}")
+                    message(
+                        STATUS
+                            "${ARG_PREFIX}System architectures (filtered: ${ARG_GFX_MATCH}): ${_GFXINFO_ECHO}"
+                        )
+                endif()
             endif()
         else()
             message(
