@@ -377,11 +377,11 @@ ${_FILE_CONTENTS}
 endfunction()
 
 # -------------------------------------------------------------------------------------- #
-# Take input as regex and return match from rocminfo
-# Check GPU architectures on the system. If a regex is provided, it will be used to
-# filter the architectures. Otherwise, all architectures will be returned.
-function(ROCPROFILER_SYSTEMS_GET_GFX_INFO _VAR)
-    cmake_parse_arguments(ARG "ECHO" "PREFIX;DELIM;GFX_REGEX" "" ${ARGN})
+# Check GPU architectures on the system. If a regex is provided, it will be used to filter
+# the architectures. Otherwise, all architectures will be returned.
+# Uses rocminfo to get the architectures.
+function(ROCPROFILER_SYSTEMS_GET_GFX_ARCHS _VAR)
+    cmake_parse_arguments(ARG "ECHO" "PREFIX;DELIM;GFX_MATCH" "" ${ARGN})
 
     if(NOT DEFINED ARG_DELIM)
         set(ARG_DELIM ", ")
@@ -394,8 +394,8 @@ function(ROCPROFILER_SYSTEMS_GET_GFX_INFO _VAR)
     find_program(
         rocminfo_EXECUTABLE
         NAMES rocminfo
-        HINTS ${rocm_version_DIR} ${ROCM_PATH} /opt/rocm
-        PATHS ${rocm_version_DIR} ${ROCM_PATH} /opt/rocm
+        HINTS ${ROCmVersion_DIR} ${ROCM_PATH} /opt/rocm
+        PATHS ${ROCmVersion_DIR} ${ROCM_PATH} /opt/rocm
         PATH_SUFFIXES bin)
 
     if(rocminfo_EXECUTABLE)
@@ -407,7 +407,7 @@ function(ROCPROFILER_SYSTEMS_GET_GFX_INFO _VAR)
             OUTPUT_STRIP_TRAILING_WHITESPACE ERROR_STRIP_TRAILING_WHITESPACE)
 
         if(rocminfo_RET EQUAL 0)
-            string(REGEX MATCHAL "gfx([0-9A-Fa-f]+)" rocminfo_GFXINFO "${rocminfo_OUT}")
+            string(REGEX MATCHALL "gfx([0-9A-Fa-f]+)" rocminfo_GFXINFO "${rocminfo_OUT}")
             list(REMOVE_DUPLICATES rocminfo_GFXINFO)
             set(${_VAR}
                 "${rocminfo_GFXINFO}"
@@ -417,7 +417,7 @@ function(ROCPROFILER_SYSTEMS_GET_GFX_INFO _VAR)
                 string(REPLACE ";" "${ARG_DELIM}" _GFXINFO_ECHO "${rocminfo_GFXINFO}")
                 message(STATUS "${ARG_PREFIX}System architectures: ${_GFXINFO_ECHO}")
             endif()
-            
+
             # Filter the architectures if a regex is provided
             if(ARG_GFX_MATCH)
                 string(REGEX MATCH "${ARG_GFX_MATCH}" _GFX_MATCH "${rocminfo_GFXINFO}")

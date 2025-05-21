@@ -26,8 +26,6 @@
 #
 # -------------------------------------------------------------------------------------- #
 
-set(ROCPROFSYS_ROCM_EVENTS_TEST "GRBM_COUNT,SQ_WAVES,SQ_INSTS_VALU,TA_TA_BUSY:device=0")
-
 rocprofiler_systems_add_test(
     NAME transpose
     TARGET transpose
@@ -86,6 +84,7 @@ rocprofiler_systems_add_test(
 if(ROCPROFSYS_USE_ROCM)
     set(NAVI_REGEX "gfx(10|11|12)[A-Fa-f0-9][A-Fa-f0-9]")
     rocprofiler_systems_get_gfx_archs(NAVI_DETECTED GFX_MATCH ${NAVI_REGEX} ECHO)
+
     if(NAVI_DETECTED)
         set(ROCPROFSYS_ROCM_EVENTS_TEST "SQ_WAVES")
         set(ROCPROFSYS_FILE_CHECKS "rocprof-device-0-SQ_WAVES.txt")
