@@ -84,7 +84,7 @@ rocprofiler_systems_add_test(
     REWRITE_FAIL_REGEX "0 instrumented loops in procedure transpose")
 
 if(ROCPROFSYS_USE_ROCM)
-    set(NAVI_REGEX "gfx(10|11|12)[A-Za-z0-9][A-Za-z0-9]")
+    set(NAVI_REGEX "gfx(10|11|12)[A-Fa-f0-9][A-Fa-f0-9]")
     rocprofiler_sys_get_gfx_info(${NAVI_REGEX} NAVI_DETECTED)
     message(STATUS "Output is :  ${NAVI_DETECTED}")
     if(NAVI_DETECTED)
