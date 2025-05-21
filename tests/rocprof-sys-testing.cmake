@@ -378,7 +378,9 @@ endfunction()
 
 # -------------------------------------------------------------------------------------- #
 # Take input as regex and return match from rocminfo
-function(rocprofiler_sys_get_gfx_info _REGEXP _VAR)
+# Check GPU architectures on the system. If a regex is provided, it will be used to
+# filter the architectures. Otherwise, all architectures will be returned.
+function(ROCPROFILER_SYSTEMS_GET_GFX_INFO _VAR)
     cmake_parse_arguments(ARG "ECHO" "PREFIX;DELIM" "" ${ARGN})
 
     if(NOT DEFINED ARG_DELIM)
