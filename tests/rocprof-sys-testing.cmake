@@ -394,8 +394,8 @@ function(ROCPROFILER_SYSTEMS_GET_GFX_INFO _VAR)
     find_program(
         rocminfo_EXECUTABLE
         NAMES rocminfo
-        HINTS ${rocprofiler-sdk_ROOT_DIR} ${rocm_version_DIR} ${ROCM_PATH} /opt/rocm
-        PATHS ${rocprofiler-sdk_ROOT_DIR} ${rocm_version_DIR} ${ROCM_PATH} /opt/rocm
+        HINTS ${rocm_version_DIR} ${ROCM_PATH} /opt/rocm
+        PATHS ${rocm_version_DIR} ${ROCM_PATH} /opt/rocm
         PATH_SUFFIXES bin)
 
     if(rocminfo_EXECUTABLE)
