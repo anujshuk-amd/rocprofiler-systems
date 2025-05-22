@@ -351,8 +351,8 @@ endfunction()
 
 # -------------------------------------------------------------------------------------- #
 # Check GPU architectures on the system. If a regex is provided, it will be used to filter
-# the architectures. Otherwise, all architectures will be returned.
-# Uses rocminfo to get the architectures.
+# the architectures. Otherwise, all architectures will be returned. Uses rocminfo to get
+# the architectures.
 function(ROCPROFILER_SYSTEMS_GET_GFX_ARCHS _VAR)
     cmake_parse_arguments(ARG "ECHO" "PREFIX;DELIM;GFX_MATCH" "" ${ARGN})
 
