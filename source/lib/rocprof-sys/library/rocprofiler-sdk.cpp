@@ -240,14 +240,14 @@ tool_tracing_callback_start(CategoryT, rocprofiler_callback_tracing_record_t rec
                             rocprofiler_timestamp_t /*ts*/)
 {
     auto _name = tool_data->callback_tracing_info.at(record.kind, record.operation);
-
     if constexpr(std::is_same<CategoryT, category::rocm_marker_api>::value)
     {
+         std::cout<<"ANUJ:------------------------record.kind="<<record.kind<<std::endl;
         if(record.kind == ROCPROFILER_CALLBACK_TRACING_MARKER_CORE_API)
         {
             auto* _data = static_cast<rocprofiler_callback_tracing_marker_api_data_t*>(
                 record.payload);
-
+             std::cout<<"ANUJ:------------------------record.operation="<<record.operation<<std::endl;
             switch(record.operation)
             {
                 case ROCPROFILER_MARKER_CORE_API_ID_roctxRangePushA:
