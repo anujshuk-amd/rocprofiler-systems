@@ -26,55 +26,54 @@
 #include <iostream>
 #include <mutex>
 #include <random>
+#include <sstream>
 #include <stdexcept>
 #include <thread>
 #include <vector>
-#include <sstream>
 
 // HIP and ROCm profiling headers
 #include <hip/hip_runtime.h>
-#include <rocprofiler-sdk-roctx/roctx.h>
 #include <hsa/hsa.h>
-
+#include <rocprofiler-sdk-roctx/roctx.h>
 
 // Define HIP_API_CALL macro for error handling.
-#define HIP_API_CALL(CALL)                                                                         \
-    {                                                                                              \
-        hipError_t error_ = (CALL);                                                                \
-        if (error_ != hipSuccess)                                                                  \
-        {                                                                                          \
-            auto _hip_api_print_lk = auto_lock_t{print_lock};                                      \
-            fprintf(stderr,                                                                        \
-                    "%s:%d :: HIP error : %s\n",                                                   \
-                    __FILE__,                                                                      \
-                    __LINE__,                                                                      \
-                    hipGetErrorString(error_));                                                    \
-            throw std::runtime_error("hip_api_call");                                              \
-        }                                                                                          \
+#define HIP_API_CALL(CALL)                                                               \
+    {                                                                                    \
+        hipError_t error_ = (CALL);                                                      \
+        if(error_ != hipSuccess)                                                         \
+        {                                                                                \
+            auto _hip_api_print_lk = auto_lock_t{ print_lock };                          \
+            fprintf(stderr, "%s:%d :: HIP error : %s\n", __FILE__, __LINE__,             \
+                    hipGetErrorString(error_));                                          \
+            throw std::runtime_error("hip_api_call");                                    \
+        }                                                                                \
     }
 
 namespace
 {
-    using auto_lock_t = std::unique_lock<std::mutex>;
-    auto print_lock = std::mutex{};
-}
+using auto_lock_t = std::unique_lock<std::mutex>;
+auto print_lock   = std::mutex{};
+}  // namespace
 
 // HIP Kernel Function
-__global__ void hipKernelLaunch(int* data) {
+__global__ void
+hipKernelLaunch(int* data)
+{
     int idx = threadIdx.x + blockIdx.x * blockDim.x;
     data[idx] += 1;
 }
 
 // Function to execute GPU workload with ROCTx profiling
-void gpu_workload() 
+void
+gpu_workload()
 {
     // Start a profiling range and push a sub-range for launching the kernel.
     uint64_t rangeId = roctxRangeStart("roctxRangeStart_GPU_Compute");
     roctxRangePush("roctxRangePush_HIP_Kernel");
-    
-    const int N = 256;
-    int *d_data = nullptr;
-    
+
+    const int N      = 256;
+    int*      d_data = nullptr;
+
     // Allocate device memory
     HIP_API_CALL(hipMalloc(&d_data, N * sizeof(int)));
 
@@ -93,7 +92,9 @@ void gpu_workload()
 }
 
 // Function executed in a separate thread with ROCTx annotations.
-void roctxThreadFunc() {
+void
+roctxThreadFunc()
+{
     roctxNameOsThread("roctxNameOsThread_New");
     roctxMark("roctxMark_Thread_Start");
     gpu_workload();
@@ -103,8 +104,8 @@ void roctxThreadFunc() {
 void
 run_profiling()
 {
-	// Label HIP device and stream
-    int deviceId{0};
+    // Label HIP device and stream
+    int deviceId{ 0 };
     HIP_API_CALL(hipGetDevice(&deviceId));
     roctxNameHipDevice("roctxNameHipDevice_device_id", deviceId);
 
@@ -122,9 +123,9 @@ run_profiling()
     gpu_workload();
 
     // Pause profiling steps using ROCTx APIs.
-    roctx_thread_id_t roctx_tid{};      // Thread identifier structure
+    roctx_thread_id_t roctx_tid{};  // Thread identifier structure
     roctxGetThreadId(&roctx_tid);
-    
+
     // Set names for OS thread, HSA agent, HIP device and stream.
     roctxNameOsThread(std::to_string(roctx_tid).c_str());
     // Prepare an hsa_agent_t with roctx thread id as a handle (example usage):
@@ -153,12 +154,11 @@ run_profiling()
     HIP_API_CALL(hipStreamDestroy(stream));
 }
 
-
-int main() { 
-    std::cout << "Roctx profiling started!" << std::endl;  
-	run_profiling();
-	std::cout << "Roctx profiling Completed!" << std::endl;  
+int
+main()
+{
+    std::cout << "Roctx profiling started!" << std::endl;
+    run_profiling();
+    std::cout << "Roctx profiling Completed!" << std::endl;
     return 0;
 }
-
-

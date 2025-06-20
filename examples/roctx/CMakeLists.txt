@@ -42,7 +42,7 @@ if((NOT CMAKE_CXX_COMPILER_IS_HIPCC OR (NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang
 endif()
 
 add_executable(roctx roctx.cpp)
-target_link_libraries(roctx PRIVATE Threads::Threads )
+target_link_libraries(roctx PRIVATE Threads::Threads)
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang"
    AND NOT CMAKE_CXX_COMPILER_IS_HIPCC
@@ -58,12 +58,10 @@ else()
 endif()
 
 # Find the library
-find_library(ROCTX_LIBRARY
+find_library(
+    ROCTX_LIBRARY
     NAMES rocprofiler-sdk-roctx
-    PATHS ${ROCM_PATH}/lib
-          ${ROCM_PATH}/lib64
-    REQUIRED
-)
+    PATHS ${ROCM_PATH}/lib ${ROCM_PATH}/lib64 REQUIRED)
 # Link it to target
 target_link_libraries(roctx PRIVATE ${ROCTX_LIBRARY})
 
@@ -78,9 +76,7 @@ endif()
 
 if(ROCPROFSYS_INSTALL_EXAMPLES)
     install(
-            TARGETS roctx
-            DESTINATION bin
-            COMPONENT rocprofiler-systems-examples)
+        TARGETS roctx
+        DESTINATION bin
+        COMPONENT rocprofiler-systems-examples)
 endif()
-
-

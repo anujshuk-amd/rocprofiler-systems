@@ -28,65 +28,65 @@
 # Ensure ROCPROFSYS_ROCM_DOMAINS is defined
 set(_overflow_environment
     "${_base_environment}"
-    "ROCPROFSYS_ROCM_DOMAINS=hip_runtime_api,marker_api,kernel_dispatch,memory_copy,scratch_memory,page_migration")
+    "ROCPROFSYS_ROCM_DOMAINS=hip_runtime_api,marker_api,kernel_dispatch,memory_copy,scratch_memory,page_migration"
+    )
 rocprofiler_systems_add_test(
-    #SKIP_BASELINE SKIP_RUNTIME SKIP_REWRITE SKIP_RUNTIME
+    # SKIP_BASELINE SKIP_RUNTIME SKIP_REWRITE SKIP_RUNTIME
     NAME validate-roctx-api
     TARGET roctx
     MPI OFF
     GPU ON
-    ENVIRONMENT "${_overflow_environment}"
-)
+    ENVIRONMENT "${_overflow_environment}")
 set(ROCTX_LABEL
-        roctxMark_GPU_workload
-        roctxRangePushA
-        roctxRangePushA
-        roctxRangeStartA
-        roctxRangeStartA
-        roctxRangePush_HIP_Kernel
-        roctxRangePush_HIP_Kernel
-        roctxRangeStart_GPU_Compute
-        roctxRangeStart_GPU_Compute
-        roctxGetThreadId
-        roctxMark_RoctxProfilerPause_End
-        roctxMark_Thread_Start
-        roctxMark_End
-        roctxRangePush_run_profiling
-        roctxMark_Finished_GPU)
+    roctxMark_GPU_workload
+    roctxRangePushA
+    roctxRangePushA
+    roctxRangeStartA
+    roctxRangeStartA
+    roctxRangePush_HIP_Kernel
+    roctxRangePush_HIP_Kernel
+    roctxRangeStart_GPU_Compute
+    roctxRangeStart_GPU_Compute
+    roctxGetThreadId
+    roctxMark_RoctxProfilerPause_End
+    roctxMark_Thread_Start
+    roctxMark_End
+    roctxRangePush_run_profiling
+    roctxMark_Finished_GPU)
 
 set(ROCTX_COUNT
-        1
-        2
-        1
-        1
-        1
-        1
-        1
-        1
-        1
-		1
-        1
-        1
-        1
-        1
-        1)
+    1
+    2
+    1
+    1
+    1
+    1
+    1
+    1
+    1
+    1
+    1
+    1
+    1
+    1
+    1)
 
 set(ROCTX_DEPTH
-        1
-        1
-        0
-        1
-        0
-        1
-        0
-        1
-        0
-        1
-        1
-        0
-        0
-        1
-        1)
+    1
+    1
+    0
+    1
+    0
+    1
+    0
+    1
+    0
+    1
+    1
+    0
+    0
+    1
+    1)
 
 rocprofiler_systems_add_validation_test(
     NAME validate-roctx-api-sampling
