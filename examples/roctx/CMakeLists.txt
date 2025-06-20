@@ -41,22 +41,8 @@ if((NOT CMAKE_CXX_COMPILER_IS_HIPCC OR (NOT CMAKE_CXX_COMPILER_ID MATCHES "Clang
     return()
 endif()
 
-option(TRANSPOSE_USE_MPI "Enable MPI support in roctx exe" ${ROCPROFSYS_USE_MPI})
-
-find_package(Threads REQUIRED)
-if(TRANSPOSE_USE_MPI)
-    find_package(MPI REQUIRED)
-endif()
-
 add_executable(roctx roctx.cpp)
-target_link_libraries(roctx PRIVATE Threads::Threads)
-
-message(AUTHOR_WARNING "roctx target could not be built")
-set(ROCTX_DIR "/opt/rocm-6.4.0/lib")
-set(CMAKE_PREFIX_PATH ${ROCTX_DIR})
-find_library(ROCTX_LIBRARY NAMES libroctx64 PATHS ${ROCTX_DIR})
-target_link_libraries(roctx PRIVATE /opt/rocm-6.4.0/lib/libroctx64.so)
-target_link_libraries(roctx PRIVATE /opt/rocm-6.4.0/lib/librocprofiler-sdk-roctx.so)
+target_link_libraries(roctx PRIVATE Threads::Threads )
 
 if(CMAKE_CXX_COMPILER_ID MATCHES "Clang"
    AND NOT CMAKE_CXX_COMPILER_IS_HIPCC
@@ -71,16 +57,19 @@ else()
     target_compile_options(roctx PRIVATE -W -Wall)
 endif()
 
+# Find the library
+find_library(ROCTX_LIBRARY
+    NAMES rocprofiler-sdk-roctx
+    PATHS ${ROCM_PATH}/lib
+          ${ROCM_PATH}/lib64
+    REQUIRED
+)
+# Link it to your target
+target_link_libraries(roctx PRIVATE ${ROCTX_LIBRARY})
+
 if("${CMAKE_BUILD_TYPE}" MATCHES "Release")
     target_compile_options(roctx PRIVATE -g1)
 endif()
-
-if(TRANSPOSE_USE_MPI)
-    target_compile_definitions(roctx PRIVATE USE_MPI)
-    target_link_libraries(roctx PRIVATE MPI::MPI_C)
-endif()
-
-
 
 if(NOT CMAKE_CXX_COMPILER_IS_HIPCC AND HIPCC_EXECUTABLE)
     # defined in MacroUtilities.cmake
@@ -89,7 +78,8 @@ endif()
 
 if(ROCPROFSYS_INSTALL_EXAMPLES)
     install(
-        TARGETS roctx
-        DESTINATION bin
-        COMPONENT rocprofiler-systems-examples)
+            TARGETS roctx
+            DESTINATION bin
+            COMPONENT rocprofiler-systems-examples)
 endif()
+
