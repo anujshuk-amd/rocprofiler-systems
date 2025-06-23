@@ -29,14 +29,15 @@
 set(_overflow_environment
     "${_base_environment}"
     "ROCPROFSYS_ROCM_DOMAINS=hip_runtime_api,marker_api,kernel_dispatch,memory_copy,scratch_memory,page_migration"
-    )
+)
 rocprofiler_systems_add_test(
     # SKIP_BASELINE SKIP_RUNTIME SKIP_REWRITE SKIP_RUNTIME
     NAME validate-roctx-api
     TARGET roctx
     MPI OFF
     GPU ON
-    ENVIRONMENT "${_overflow_environment}")
+    ENVIRONMENT "${_overflow_environment}"
+)
 set(ROCTX_LABEL
     roctxMark_GPU_workload
     roctxRangePushA
@@ -52,7 +53,8 @@ set(ROCTX_LABEL
     roctxMark_Thread_Start
     roctxMark_End
     roctxRangePush_run_profiling
-    roctxMark_Finished_GPU)
+    roctxMark_Finished_GPU
+)
 
 set(ROCTX_COUNT
     1
@@ -69,7 +71,8 @@ set(ROCTX_COUNT
     1
     1
     1
-    1)
+    1
+)
 
 set(ROCTX_DEPTH
     1
@@ -86,11 +89,13 @@ set(ROCTX_DEPTH
     0
     0
     1
-    1)
+    1
+)
 
 rocprofiler_systems_add_validation_test(
     NAME validate-roctx-api-sampling
     PERFETTO_METRIC "rocm_marker_api"
     PERFETTO_FILE "perfetto-trace.proto"
     LABELS "roctx"
-    ARGS -l ${ROCTX_LABEL} -c ${ROCTX_COUNT} -d ${ROCTX_DEPTH} -p)
+    ARGS -l ${ROCTX_LABEL} -c ${ROCTX_COUNT} -d ${ROCTX_DEPTH} -p
+)
