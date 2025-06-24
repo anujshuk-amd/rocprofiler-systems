@@ -28,7 +28,7 @@
 # Ensure ROCPROFSYS_ROCM_DOMAINS is defined
 set(_overflow_environment
     "${_base_environment}"
-    "ROCPROFSYS_ROCM_DOMAINS=hip_runtime_api,marker_api,kernel_dispatch,memory_copy,scratch_memory,page_migration"
+    "ROCPROFSYS_ROCM_DOMAINS=hip_runtime_api,marker_api,kernel_dispatch
 )
 rocprofiler_systems_add_test(
     # SKIP_BASELINE SKIP_RUNTIME SKIP_REWRITE SKIP_RUNTIME
