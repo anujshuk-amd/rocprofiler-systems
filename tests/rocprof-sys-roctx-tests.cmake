@@ -28,13 +28,12 @@
 # Ensure ROCPROFSYS_ROCM_DOMAINS is defined
 set(_roctx_environment
     "${_base_environment}"
-    "ROCPROFSYS_ROCM_DOMAINS=hip_runtime_api,marker_api,kernel_dispatch
+    "ROCPROFSYS_ROCM_DOMAINS=hip_runtime_api,marker_api,kernel_dispatch"
 )
 rocprofiler_systems_add_test(
     # SKIP_BASELINE SKIP_RUNTIME SKIP_REWRITE SKIP_RUNTIME
     NAME roctx-api
     TARGET roctx
-    MPI OFF
     GPU ON
     ENVIRONMENT "${_overflow_environment}"
 )
