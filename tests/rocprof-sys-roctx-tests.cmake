@@ -26,7 +26,7 @@
 #
 # -------------------------------------------------------------------------------------- #
 # Ensure ROCPROFSYS_ROCM_DOMAINS is defined
-set(_overflow_environment
+set(_roctx_environment
     "${_base_environment}"
     "ROCPROFSYS_ROCM_DOMAINS=hip_runtime_api,marker_api,kernel_dispatch
 )
