@@ -162,4 +162,3 @@ main()
     std::cout << "Roctx profiling Completed!" << std::endl;
     return 0;
 }
-
