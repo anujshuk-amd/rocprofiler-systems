@@ -35,7 +35,7 @@ rocprofiler_systems_add_test(
     NAME roctx-api
     TARGET roctx
     GPU ON
-    ENVIRONMENT "${_overflow_environment}"
+    ENVIRONMENT "${_roctx_environment}"
 )
 set(ROCTX_LABEL
     roctxMark_GPU_workload
@@ -92,7 +92,7 @@ set(ROCTX_DEPTH
 )
 
 rocprofiler_systems_add_validation_test(
-    NAME validate-roctx-api-sampling
+    NAME roctx-api-sampling
     PERFETTO_METRIC "rocm_marker_api"
     PERFETTO_FILE "perfetto-trace.proto"
     LABELS "roctx"
