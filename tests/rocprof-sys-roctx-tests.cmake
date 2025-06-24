@@ -32,7 +32,7 @@ set(_roctx_environment
 )
 rocprofiler_systems_add_test(
     # SKIP_BASELINE SKIP_RUNTIME SKIP_REWRITE SKIP_RUNTIME
-    NAME validate-roctx-api
+    NAME roctx-api
     TARGET roctx
     MPI OFF
     GPU ON
