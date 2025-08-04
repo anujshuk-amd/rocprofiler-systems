@@ -41,10 +41,14 @@ function(rocprofiler_systems_causal_example_executable _NAME)
     )
     target_compile_options(rocprofsys-causal-example-lib-no-debug INTERFACE -g0)
 
+    # Create the base executable without causal profiling instrumentation
+    # This serves as the baseline/control version for performance comparison
     add_executable(${_NAME} ${CAUSAL_SOURCES})
     target_compile_definitions(
         ${_NAME}
         PRIVATE USE_COZ=0 USE_OMNI=0 ${CAUSAL_DEFINITIONS}
+        # USE_COZ=0: Disables coz-profiler causal profiling macros
+        # USE_OMNI=0: Disables rocprofiler-systems causal profiling macros
     )
     target_include_directories(
         ${_NAME}
