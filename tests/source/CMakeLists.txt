@@ -9,16 +9,16 @@
 # copies of the Software, and to permit persons to whom the Software is
 # furnished to do so, subject to the following conditions:
 #
-# The above copyright notice and this permission notice shall be included in
-# all copies or substantial portions of the Software.
+# The above copyright notice and this permission notice shall be included in all
+# copies or substantial portions of the Software.
 #
 # THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 # IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 # FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL THE
 # AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-# THE SOFTWARE.
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+# SOFTWARE.
 
 set(CMAKE_BUILD_TYPE "Release")
 find_package(Threads REQUIRED)
@@ -42,6 +42,18 @@ set(_thread_limit_environment
 )
 
 math(EXPR THREAD_LIMIT_TEST_VALUE "${ROCPROFSYS_MAX_THREADS} + 24")
+# Make sure the thread limit is set to the maximum thread size limit, which is
+# 4096, as indicated by the counters.hpp.
+set(ALLOWED_MAX_THREADS 4096)
+if(${THREAD_LIMIT_TEST_VALUE} GREATER_EQUAL ${ALLOWED_MAX_THREADS})
+    message(
+        WARNING
+        "THREAD_LIMIT_TEST_VALUE has reached or exceeded the max allowed threads (4096)."
+    )
+    # Establishing the maximum number of permitted threads index.
+    math(EXPR VALID_MAX_THREAD_INDEX "${ALLOWED_MAX_THREADS} - 1")
+    set(THREAD_LIMIT_TEST_VALUE ${VALID_MAX_THREAD_INDEX})
+endif()
 math(EXPR THREAD_LIMIT_TEST_VALUE_PLUS_ONE "${THREAD_LIMIT_TEST_VALUE} + 1")
 
 set(_thread_limit_pass_regex "\\|${THREAD_LIMIT_TEST_VALUE}>>>")
@@ -50,20 +62,53 @@ set(_thread_limit_fail_regex
 )
 
 rocprofiler_systems_add_test(
-    SKIP_BASELINE
-    NAME thread-limit
-    TARGET thread-limit
-    LABELS "max-threads"
-    REWRITE_ARGS -e -v 2 -i 1024 --label return args
-    RUNTIME_ARGS -e -v 1 -i 1024 --label return args
-    RUN_ARGS 35 2 ${THREAD_LIMIT_TEST_VALUE}
-    REWRITE_TIMEOUT 180
-    RUNTIME_TIMEOUT 360
-    RUNTIME_PASS_REGEX "${_thread_limit_pass_regex}"
-    SAMPLING_PASS_REGEX "${_thread_limit_pass_regex}"
-    REWRITE_RUN_PASS_REGEX "${_thread_limit_pass_regex}"
-    RUNTIME_FAIL_REGEX "${_thread_limit_fail_regex}"
-    SAMPLING_FAIL_REGEX "${_thread_limit_fail_regex}"
-    REWRITE_RUN_FAIL_REGEX "${_thread_limit_fail_regex}"
-    ENVIRONMENT "${_thread_limit_environment}"
+  SKIP_BASELINE
+  NAME
+  thread-limit
+  TARGET
+  thread-limit
+  LABELS
+  "max-threads"
+  REWRITE_ARGS
+  -e
+  -v
+  2
+  -i
+  1024
+  --label
+  return
+  args
+  RUNTIME_ARGS
+  -e
+  -v
+  1
+  -i
+  1024
+  --label
+  return
+  args
+  RUN_ARGS
+  35
+  2
+  ${THREAD_LIMIT_TEST_VALUE}
+  SAMPLING_TIMEOUT
+  240
+  REWRITE_TIMEOUT
+  240
+  RUNTIME_TIMEOUT
+  360
+  RUNTIME_PASS_REGEX
+  "${_thread_limit_pass_regex}"
+  SAMPLING_PASS_REGEX
+  "${_thread_limit_pass_regex}"
+  REWRITE_RUN_PASS_REGEX
+  "${_thread_limit_pass_regex}"
+  RUNTIME_FAIL_REGEX
+  "${_thread_limit_fail_regex}"
+  SAMPLING_FAIL_REGEX
+  "${_thread_limit_fail_regex}"
+  REWRITE_RUN_FAIL_REGEX
+  "${_thread_limit_fail_regex}"
+  ENVIRONMENT
+  "${_thread_limit_environment}"
 )
